@@ -1,0 +1,18 @@
+# Backend (Spring Boot)
+target/
+*.class
+*.iml
+.mvn/
+*.jar
+
+# Frontend (React)
+url-shortner-frontend/node_modules/
+url-shortner-frontend/build/
+
+# IDE
+.vscode/
+.idea/
+
+# ENV
+*.env
+.env.*
