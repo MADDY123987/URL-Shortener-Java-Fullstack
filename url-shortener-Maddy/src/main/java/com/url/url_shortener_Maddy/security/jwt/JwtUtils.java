@@ -20,11 +20,14 @@ import java.util.stream.Collectors;
 @Component
 public class JwtUtils {
 
-    @Value("${jwt.secret}")
+    // default secret used only if property is missing
+    @Value("${jwt.secret:mySuperStrongSecretKey12345}")
     private String jwtSecret;
 
-    @Value("${jwt.expiration}")
+    // default to 1 day in milliseconds if property missing
+    @Value("${jwt.expiration:86400000}")
     private long jwtExpirationsMs;
+
 
     public String getJwtFromHeader(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");

@@ -29,53 +29,81 @@ const DashboardLayout = () => {
   } = useFetchTotalClicks(token, onError);
 
   return (
-    <div className="lg:px-14 sm:px-8 px-4 min-h-[calc(100vh-64px)]">
+    <div className="lg:px-14 sm:px-8 px-4 min-h-[calc(100vh-64px)] bg-slate-50">
       {clicksLoading ? (
         <Loader />
       ) : (
-        <div className="lg:w-[90%] w-full mx-auto py-16">
-          <div className="h-96 relative">
-            {totalClicks.length === 0 && (
-              <div className="absolute flex flex-col justify-center sm:items-center items-end w-full left-0 top-0 bottom-0 right-0 m-auto">
-                <h1 className="text-slate-800 font-serif sm:text-2xl text-[18px] font-bold mb-1">
-                  No Data For This Time Period
-                </h1>
-                <h3 className="sm:w-96 w-[90%] sm:ml-0 pl-6 text-center sm:text-lg text-sm text-slate-600 ">
-                  Share your short link to view where your engagements are coming from
-                </h3>
+        <div className="lg:w-[90%] w-full mx-auto py-14">
+          {/* Graph card */}
+          <div className="bg-white rounded-2xl shadow-md border border-slate-100 px-4 sm:px-6 py-5 mb-8">
+            <div className="flex justify-between items-center mb-4">
+              <div>
+                <h2 className="text-slate-900 font-semibold text-lg">
+                  Link engagement overview
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-500">
+                  Visualize how your short links are performing over time.
+                </p>
               </div>
-            )}
-            <Graph graphData={totalClicks} />
+              <span className="hidden sm:inline-flex items-center px-2 py-1 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-600 border border-emerald-100">
+                Live from your data
+              </span>
+            </div>
+
+            <div className="h-80 sm:h-96 relative">
+              {totalClicks.length === 0 && (
+                <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-6">
+                  <h1 className="text-slate-800 font-serif sm:text-2xl text-[18px] font-bold mb-1">
+                    No data for this time period
+                  </h1>
+                  <h3 className="sm:w-96 w-full text-sm sm:text-base text-slate-600">
+                    Create and share a short link to start seeing clicks and
+                    engagement trends here.
+                  </h3>
+                </div>
+              )}
+              <Graph graphData={totalClicks} />
+            </div>
           </div>
 
-          <div className="py-5 sm:text-end text-center">
+          {/* CTA button */}
+          <div className="py-3 sm:text-end text-center">
             <button
-              className="bg-custom-gradient px-4 py-2 rounded-md text-white"
+              className="inline-flex items-center justify-center gap-2 bg-custom-gradient px-4 py-2 rounded-md text-white text-sm font-semibold shadow-md hover:shadow-lg hover:translate-y-[1px] transition-all"
               onClick={() => setShortenPopUp(true)}
             >
-              Create a New Short URL
+              <FaLink className="text-sm" />
+              <span>Create a new short URL</span>
             </button>
           </div>
 
-          <div>
+          {/* List / empty state */}
+          <div className="mt-4">
             {!urlsLoading && myShortenUrls.length === 0 ? (
-              <div className="flex justify-center pt-16">
-                <div className="flex gap-2 items-center justify-center py-6 sm:px-8 px-5 rounded-md shadow-lg bg-gray-50">
-                  <h1 className="text-slate-800 font-montserrat sm:text-[18px] text-[14px] font-semibold mb-1 ">
-                    You haven't created any short link yet
+              <div className="flex justify-center pt-10">
+                <div className="flex gap-2 items-center justify-center py-5 sm:px-8 px-5 rounded-xl shadow-md bg-white border border-slate-100">
+                  <FaLink className="text-blue-500 sm:text-xl text-base" />
+                  <h1 className="text-slate-800 font-montserrat sm:text-[16px] text-[14px] font-semibold">
+                    You haven&apos;t created any short link yet. Start by
+                    creating your first one above.
                   </h1>
-                  <FaLink className="text-blue-500 sm:text-xl text-sm " />
                 </div>
               </div>
             ) : (
-              <ShortenUrlList data={myShortenUrls} />
+              <div className="bg-white rounded-2xl shadow-md border border-slate-100 mt-4">
+                <ShortenUrlList data={myShortenUrls} />
+              </div>
             )}
           </div>
         </div>
       )}
 
       {/* Pass refetch so popup can refresh immediately after create */}
-      <ShortenPopUp refetch={refetch} open={shortenPopUp} setOpen={setShortenPopUp} />
+      <ShortenPopUp
+        refetch={refetch}
+        open={shortenPopUp}
+        setOpen={setShortenPopUp}
+      />
     </div>
   );
 };

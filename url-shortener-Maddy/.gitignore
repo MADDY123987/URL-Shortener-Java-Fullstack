@@ -33,3 +33,11 @@ build/
 .vscode/
 *.env
 .env.*
+
+### VS Code ###
+.vscode/
+*.env
+.env.*
+
+# Spring Boot config (keep secrets out of git)
+src/main/resources/application.properties

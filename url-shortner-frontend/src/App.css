@@ -1,0 +1,53 @@
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+
+  --bg-body: #f4f5fb;          /* page background */
+  --text-main: #020617;        /* main headings */
+  --text-body: #1f2937;        /* normal text */
+  --text-muted: #6b7280;       /* subtle text */
+  --card-bg: #ffffff;          /* card background */
+  --card-border: #e5e7eb;      /* card border */
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-body: #020617;          /* deep navy */
+  --text-main: #e5e7eb;        /* light headings */
+  --text-body: #cbd5f5;        /* normal text */
+  --text-muted: #9ca3af;       /* subtle text */
+  --card-bg: #020617;          /* match bg, but we’ll give shadow */
+  --card-border: #1f2937;      /* subtle border */
+}
+
+/* whole app wrapper (already on your <div className="theme-page">) */
+.theme-page {
+  background-color: var(--bg-body);
+  color: var(--text-body);
+}
+
+/* page sections like Landing, About, Dashboard */
+.theme-section {
+  background-color: var(--bg-body);
+  color: var(--text-body);
+}
+
+/* generic card surface */
+.theme-card {
+  background-color: var(--card-bg);
+  border-color: var(--card-border);
+}
+
+/* text helpers */
+.theme-heading {
+  color: var(--text-main);
+}
+
+.theme-body-text {
+  color: var(--text-body);
+}
+
+.theme-muted {
+  color: var(--text-muted);
+}

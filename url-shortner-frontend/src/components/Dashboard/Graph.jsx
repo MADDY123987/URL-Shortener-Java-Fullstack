@@ -20,30 +20,25 @@ ChartJS.register(
 );
 
 const Graph = ({ graphData }) => {
-  const labels = graphData?.map((item, i) => `${item.clickDate}`);
+  const labels = graphData?.map((item) => `${item.clickDate}`);
   const userPerDaya = graphData?.map((item) => item.count);
 
   const data = {
     labels:
-     graphData.length > 0
+      graphData.length > 0
         ? labels
-        : ["", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+        : Array(12).fill(""),
     datasets: [
       {
-        label: "Total Clicks",
+        label: "Clicks",
         data:
-         graphData.length > 0
+          graphData.length > 0
             ? userPerDaya
-            : [1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3, 2, 1],
-        backgroundColor:
-         graphData.length > 0 ? "#3b82f6" : "rgba(54, 162, 235, 0.1)",
-        borderColor: "#1D2327",
-        pointBorderColor: "red",
-        fill: true,
-        tension: 0.4,
-        barThickness: 20,
-        categoryPercentage: 1.5,
-        barPercentage: 1.5,
+            : [1, 2, 3, 5, 7, 8, 9, 8, 6, 4, 2, 1],
+        backgroundColor: "rgba(79, 70, 229, 0.7)", // Indigo
+        borderRadius: 8,
+        barThickness: 26,
+        borderSkipped: false,
       },
     ],
   };
@@ -53,52 +48,42 @@ const Graph = ({ graphData }) => {
     responsive: true,
     plugins: {
       legend: {
-        display: true,
+        labels: {
+          color: "#334155",
+          font: { weight: 600 },
+        },
+      },
+      tooltip: {
+        backgroundColor: "#1e293b", // slate-800
+        titleColor: "#f1f5f9",
+        bodyColor: "#e2e8f0",
+        cornerRadius: 8,
       },
     },
     scales: {
       y: {
         beginAtZero: true,
-        ticks: {
-          // stepSize: 1,
-          callback: function (value) {
-            if (Number.isInteger(value)) {
-              return value.toString();
-            }
-            return "";
-          },
+        grid: {
+          color: "rgba(203, 213, 225, 0.35)", // lighter grid
         },
-        title: {
-          display: true,
-          text: "Number Of Clicks",
-          font: {
-            family: "Arial",
-            size: 16,
-            weight: "bold",
-            color: "#FF0000",
-          },
+        ticks: {
+          color: "#475569",
         },
       },
       x: {
-        beginAtZero: true,
-        // ticks: {
-        //   stepSize: 1,
-        // },
-        title: {
-          display: true,
-          text: "Date",
-          font: {
-            family: "Arial",
-            size: 16,
-            weight: "bold",
-            color: "#FF0000",
-          },
+        grid: { display: false },
+        ticks: {
+          color: "#475569",
         },
       },
     },
   };
 
-  return <Bar className=" w-full" data={data} options={options}></Bar>;
+  return (
+    <div className="w-full h-full">
+      <Bar data={data} options={options} />
+    </div>
+  );
 };
 
 export default Graph;

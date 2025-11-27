@@ -1,69 +1,60 @@
-import "./App.css";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+// src/App.jsx
+import React from "react";
+import "./App.css"; // ✅ global styles + theme (theme-page, theme-card, etc.)
+import { Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
-import { ContextProvider } from "./contextApi/ContextApi";
-import PrivateRoute from "./PrivateRoute";
-
 import NavBar from "./components/NavBar";
-import LandingPage from "./components/LandingPage"; // new
-import AboutPage from "./components/AboutPage";     // new
+import LandingPage from "./components/LandingPage";
+import AboutPage from "./components/AboutPage";
+import Footer from "./components/Footer";
 import LoginPage from "./components/LoginPage";
 import RegisterPage from "./components/RegisterPage";
+import ShortenUrlPage from "./components/ShortenUrlPage";
 import DashboardLayout from "./components/Dashboard/DashboardLayout";
+import ErrorPage from "./components/ErrorPage";
 
-const queryClient = new QueryClient();
+import { useStoreContext } from "./contextApi/ContextApi";
 
-function App() {
+const App = () => {
+  const { token } = useStoreContext();
+
   return (
-    <QueryClientProvider client={queryClient}>
-      <ContextProvider>
-        <Router>
-          <NavBar />
-          <Routes>
-            {/* Public routes */}
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/about" element={<AboutPage />} />
+    <div className="min-h-screen flex flex-col theme-page">
+      {/* global toast container for all toast.success / toast.error */}
+      <Toaster position="bottom-center" />
 
-            {/* Public but redirect if already logged in */}
-            <Route
-              path="/login"
-              element={
-                <PrivateRoute publicPage>
-                  <LoginPage />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/register"
-              element={
-                <PrivateRoute publicPage>
-                  <RegisterPage />
-                </PrivateRoute>
-              }
-            />
+      <NavBar />
 
-            {/* Protected route */}
-            <Route
-              path="/dashboard"
-              element={
-                <PrivateRoute>
-                  <DashboardLayout />
-                </PrivateRoute>
-              }
-            />
+      <main className="flex-1">
+        <Routes>
+          {/* Public routes */}
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/shorten" element={<ShortenUrlPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
 
-            {/* fallback */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-          <Toaster position="top-center" />
-        </Router>
-      </ContextProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+          {/* Protected dashboard */}
+          <Route
+            path="/dashboard"
+            element={
+              token ? <DashboardLayout /> : <Navigate to="/login" replace />
+            }
+          />
+
+          {/* Generic error or 404 route */}
+          <Route
+            path="/error"
+            element={<ErrorPage message="Something went wrong." />}
+          />
+          <Route path="*" element={<ErrorPage message="Page not found." />} />
+        </Routes>
+      </main>
+
+      <Footer />
+    </div>
   );
-}
+};
 
 export default App;
