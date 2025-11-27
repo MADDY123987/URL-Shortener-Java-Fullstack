@@ -1,4 +1,3 @@
-// src/main/java/com/url/url_shortener_Maddy/security1/WebSecurityConfig.java
 package com.url.url_shortener_Maddy.security1;
 
 import java.util.List;
@@ -58,19 +57,22 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                // enable CORS (uses corsConfigurationSource bean below)
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
-                // 🔑 make the app stateless (no saved requests / JSESSION flows):
+                // make the app stateless
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        // public auth endpoints
                         .requestMatchers(HttpMethod.POST, "/api/auth/public/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/public/register").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/s/**").permitAll()
+                        // protected endpoints
                         .requestMatchers("/api/urls/**").authenticated()
                         .anyRequest().authenticated()
                 )
-                // 🔑 return 401 for unauthenticated instead of “saved request”/403 weirdness
+                // return 401 for unauthenticated
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
 
         http.authenticationProvider(authenticationProvider());
@@ -78,12 +80,24 @@ public class WebSecurityConfig {
         return http.build();
     }
 
+    /**
+     * CORS configuration used by Spring Security.
+     * - includes production Vercel origin and localhost dev origin
+     * - if your frontend sends cookies (axios withCredentials:true) setAllowCredentials(true) and DO NOT use "*"
+     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cfg = new CorsConfiguration();
-        cfg.setAllowedOrigins(List.of("http://localhost:5173"));
+
+        // Add your exact frontend origin(s) here:
+        cfg.setAllowedOrigins(List.of(
+                "https://url-shortener-java-fullstack.vercel.app", // Vercel frontend (production)
+                "http://localhost:5173" // local dev (vite)
+        ));
+
         cfg.setAllowedMethods(List.of("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
-        cfg.setAllowedHeaders(List.of("*"));
+        cfg.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "Origin", "X-Requested-With"));
+        // set to true if you send cookies; currently false since JWT uses Authorization header
         cfg.setAllowCredentials(false);
         cfg.setMaxAge(3600L);
 

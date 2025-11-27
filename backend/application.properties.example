@@ -1,0 +1,19 @@
+$example = @"
+# DB (example)
+spring.datasource.url=jdbc:mysql://localhost:3306/urlshortenerdb
+spring.datasource.username=root
+spring.datasource.password=changeme
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+
+# JWT (example)
+jwt.secret=changeme
+jwt.expiration=86400000
+"@
+
+$examplePath = "src/main/resources/application.properties.example"
+# ensure folder exists
+New-Item -ItemType Directory -Force -Path (Split-Path $examplePath) | Out-Null
+$example | Out-File -Encoding UTF8 $examplePath
+"Created example at $examplePath"
